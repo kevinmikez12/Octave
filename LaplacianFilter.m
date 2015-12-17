@@ -24,7 +24,7 @@
 
 function [output_image] = LaplacianFilter (image_path)
   input_image = imread("Mona-Lisa.jpg");
-  laplacian_mask = fspecial("laplacian", 0.2);
+  laplacian_mask = fspecial("laplacian", 0);
   edges = imfilter(input_image, laplacian_mask);
   output_image = input_image + edges;
   
