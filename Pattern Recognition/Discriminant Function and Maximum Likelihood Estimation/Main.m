@@ -22,7 +22,7 @@
 ## Author: Qamar-ud-Din <qamar-ud-din@qamaruddin-Vostro-1540>
 ## Created: 2015-12-21
 
-function covariance_matrix = Main
+function [cov_1, cov_2, cov_3] = Main
   ## constants
   num_of_training_samples = 20;
   num_of_testing_samples = 30;
@@ -46,13 +46,7 @@ function covariance_matrix = Main
   meu_2 = vec(mean(w2));
   meu_3 = vec(mean(w3));
   ## estimate covariance matrix
-  covariance_matrix = zeros(num_of_features, num_of_features);
-  for k = 1:num_of_training_samples
-    for i = 1:num_of_features
-      for j = 1:num_of_features
-        covariance_matrix(i, j) += ( w1(k, i) - meu_1(i) ) * ( w1(k, j) - meu_1(j) )
-      endfor; ## j:= d:= #_of_features
-    endfor; ## i:= d:= #_of_features
-  endfor; ## k:= training samples
-  covariance_matrix = covariance_matrix / num_of_training_samples;
+  cov_1 = Estimate_Covariance_with_MLE (w1, meu_1, num_of_features, num_of_training_samples);
+  cov_2 = Estimate_Covariance_with_MLE (w2, meu_2, num_of_features, num_of_training_samples);
+  cov_3 = Estimate_Covariance_with_MLE (w3, meu_3, num_of_features, num_of_training_samples);
 endfunction
