@@ -22,7 +22,27 @@
 ## Author: Qamar-ud-Din <qamar-ud-din@qamaruddin-Vostro-1540>
 ## Created: 2015-12-21
 
-function [Iris_Dataset] = Main
+function meu_1 = Main
+  # constants
+  num_of_training_samples = 20;
+  num_of_testing_samples = 30;
+  num_of_samples_per_class = 50;
+  # read file into four columns to escape text`
   [x_1, x_2, x_3, x_4] = textread("Iris Data.txt", "%f %f %f %f %*s", "delimiter", ",");
+  # merge the columns into 150x4 Matrix
   Iris_Dataset = [x_1 x_2 x_3 x_4];
+  # separate each class into 20x4 Matrix for Training
+  # use constants for generic coding
+  w1 = Iris_Dataset(1:num_of_training_samples, :);
+  from = (1+num_of_samples_per_class);
+  to = from + num_of_training_samples - 1;
+  w2 = Iris_Dataset(from:to, :);
+  from = (1 + num_of_samples_per_class * 2);
+  to = from + num_of_training_samples - 1;
+  w3 = Iris_Dataset(from:to, :);
+  # calculate mean vector meu for each class (state of nature) 4x1 vector
+  meu_1 = vec(mean(w1));
+  meu_2 = vec(mean(w2));
+  meu_3 = vec(mean(w3));
+  # estimate covariance matrix
 endfunction
