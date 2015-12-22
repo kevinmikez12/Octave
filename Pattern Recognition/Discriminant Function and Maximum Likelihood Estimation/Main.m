@@ -22,13 +22,14 @@
 ## Author: Qamar-ud-Din <qamar-ud-din@qamaruddin-Vostro-1540>
 ## Created: 2015-12-21
 
-function [g_1, g_2, g_3] = Main
+function [confusion_matrix, overall_accuracy] = Main
   ## constants
   num_of_training_samples = 20;
   num_of_testing_samples = 30;
   num_of_samples_per_class = 50;
+  num_of_classes = 3;
   num_of_features = 4;
-  priori = 1 / 3;
+  priori = 1 / num_of_classes;
   ## read file into four columns to escape text`
   [x_1, x_2, x_3, x_4] = textread("Iris Data.txt", "%f %f %f %f %*s", "delimiter", ",");
   ## merge the columns into 150x4 Matrix
@@ -61,9 +62,9 @@ function [g_1, g_2, g_3] = Main
   w_2 = inv(cov_2) * meu_2;
   w_3 = inv(cov_3) * meu_3;
   ## Omega_i_0
-  omega_1_0 = (-1/2) * transpose(meu_1) * inv(cov_1) * meu_1 - (1/2) * log(det(cov_1)) + log(priori);
-  omega_2_0 = (-1/2) * transpose(meu_2) * inv(cov_2) * meu_2 - (1/2) * log(det(cov_2)) + log(priori);
-  omega_3_0 = (-1/2) * transpose(meu_3) * inv(cov_3) * meu_3 - (1/2) * log(det(cov_3)) + log(priori);
+  omega_0_1 = (-1/2) * transpose(meu_1) * inv(cov_1) * meu_1 - (1/2) * log(det(cov_1)) + log(priori);
+  omega_0_2 = (-1/2) * transpose(meu_2) * inv(cov_2) * meu_2 - (1/2) * log(det(cov_2)) + log(priori);
+  omega_0_3 = (-1/2) * transpose(meu_3) * inv(cov_3) * meu_3 - (1/2) * log(det(cov_3)) + log(priori);
   
   ## extract testing set Matrix 30 x 4
   ## use constants for generic coding
@@ -75,10 +76,11 @@ function [g_1, g_2, g_3] = Main
   to = from + num_of_testing_samples - 1; ## 150
   w3 = Iris_Dataset(from:to, :);
   
-  x = vec(w3(1,:));
-  g_1 = transpose(x) * W_1 * x + transpose(w_1) * x + omega_1_0;
-  g_2 = transpose(x) * W_2 * x + transpose(w_2) * x + omega_2_0;
-  g_3 = transpose(x) * W_3 * x + transpose(w_3) * x + omega_3_0;
-  
-  
+  ## Loop testing set for class 1
+  confusion_matrix = zeros(num_of_classes, num_of_classes);
+  confusion_matrix = Calculate_Linear_Discriminant_Function(confusion_matrix,w1, 1, W_1, W_2, W_3, w_1, w_2, w_3, omega_0_1, omega_0_2, omega_0_3);
+  confusion_matrix = Calculate_Linear_Discriminant_Function(confusion_matrix,w2, 2, W_1, W_2, W_3, w_1, w_2, w_3, omega_0_1, omega_0_2, omega_0_3);
+  confusion_matrix = Calculate_Linear_Discriminant_Function(confusion_matrix,w3, 3, W_1, W_2, W_3, w_1, w_2, w_3, omega_0_1, omega_0_2, omega_0_3);
+
+  overall_accuracy = sum(diag(confusion_matrix)) / (num_of_testing_samples*num_of_classes);
 endfunction
