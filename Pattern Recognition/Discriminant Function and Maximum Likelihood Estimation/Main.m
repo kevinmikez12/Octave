@@ -24,8 +24,8 @@
 
 function [confusion_matrix, overall_accuracy] = Main
   ## constants
-  num_of_training_samples = 20;
-  num_of_testing_samples = 30;
+  num_of_training_samples = 25;
+  num_of_testing_samples = 25;
   num_of_samples_per_class = 50;
   num_of_classes = 3;
   num_of_features = 4;
@@ -47,10 +47,25 @@ function [confusion_matrix, overall_accuracy] = Main
   meu_1 = vec(mean(w1));
   meu_2 = vec(mean(w2));
   meu_3 = vec(mean(w3));
+  
   ## estimate covariance matrix
-  cov_1 = Estimate_Covariance_with_MLE (w1, meu_1, num_of_features, num_of_training_samples);
-  cov_2 = Estimate_Covariance_with_MLE (w2, meu_2, num_of_features, num_of_training_samples);
-  cov_3 = Estimate_Covariance_with_MLE (w3, meu_3, num_of_features, num_of_training_samples);
+  cov_1 = Estimate_Covariance_with_MLE(w1, meu_1, num_of_features, num_of_training_samples);
+  cov_2 = Estimate_Covariance_with_MLE(w2, meu_2, num_of_features, num_of_training_samples);
+  cov_3 = Estimate_Covariance_with_MLE(w3, meu_3, num_of_features, num_of_training_samples);
+  
+  clc;
+  disp("meu 1");
+  disp(meu_1);
+  disp("meu 2");
+  disp(meu_2);
+  disp("meu 3");
+  disp(meu_3);
+  disp("sigma 1");
+  disp(cov_1);
+  disp("sigma 2");
+  disp(cov_2);
+  disp("sigma 3");
+  disp(cov_3);
   
   ## calculate linear coefficients of discriminant functions for each class (state of nature)
   ## Wi
