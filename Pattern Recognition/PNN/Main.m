@@ -9,12 +9,13 @@
   d = 4; ## number of features
   c = 3; ## number of classes
   n = num_of_training_samples * c; ## number of patterns nodes = number of training samples per class * number of classes
+  sigma = 1;
   
 ## Matrices
   w = zeros(n, d); ## weights between input layer and patterns layer
   a = zeros(n, c); ## connections between patterns layer and output categories layer
   net_k = zeros(n, 1); ## inner product of test sample x and weights matrix w w'x
-  output = vec(zeros(c, 1)); ## discriminant function calculated at each output node
+  
 
 ## Read Iris dataset
   ## read file into four columns to escape text`
@@ -32,7 +33,7 @@
   from = (1 + num_of_samples_per_class * 2);
   to = from + num_of_training_samples - 1;
   w3 = Iris_Dataset(from:to, :);
-  training_set = [w1; w2; w3]
+  training_set = [w1; w2; w3];
   
 ##### PNN Training #####
 ## construct weights matrix [ n x d ]
@@ -56,10 +57,13 @@
       ## partitions training set to c segmens 
       ## to help build the connections 
       ## from patterns to categories
-      category_index = floor((j-1) / num_of_training_samples) + 1
-      a(j, category_index) = 1
+      category_index = floor((j-1) / num_of_training_samples) + 1;
+      a(j, category_index) = 1;
     endfor;
-disp(w)
+
+## Estimate sigma of non-linear exponential function
+## Average distance to nearest neighbor
+
 ##### Testing #####
 
   ## extract testing set Matrix 30 x 4
@@ -73,10 +77,13 @@ disp(w)
   w3 = Iris_Dataset(from:to, :);
 
 ## calculate net_k for each pattern from j = 1 ... n
-  transpose(w1(j,:))
-  for j = 1 : n
-    net_k(j, 1) = w(j,:)*transpose(w1(j,:))
-  endfor;
+  variance = power(sigma, 2);
+  confusion_matrix = zeros(c, c);
+  [confusion_matrix] = Test (confusion_matrix, w1, n, w, c, a, net_k, variance, 1);
+  [confusion_matrix] = Test (confusion_matrix, w2, n, w, c, a, net_k, variance, 2);
+  [confusion_matrix] = Test (confusion_matrix, w3, n, w, c, a, net_k, variance, 3);
+  confusion_matrix
+  overall_accuracy = sum(diag(confusion_matrix)) / (num_of_testing_samples*c)
 ## calculate non-linear out for each pattern from j = 1 ... n
 ## output vector [c x 1]
 ## sums all nonlinear outputs from patterns layer
